@@ -1,0 +1,81 @@
+
+Table users {
+  id int [pk, increment]
+  name varchar
+  email varchar [unique]
+  password varchar
+  role varchar
+  device_id int [ref: > devices.id]
+  last_login_at timestamp
+}
+
+Table devices {
+  id int [pk, increment]
+  app_used varchar
+  type varchar
+  is_active boolean
+  last_login_at timestamp
+  last_login_by int [ref: > users.id]
+}
+
+Table events {
+  id int [pk, increment]
+  name varchar
+  slug varchar [unique]
+  location varchar
+  starts_at timestamp
+  ends_at timestamp
+  description text
+  is_active boolean
+  ticket_limit int
+}
+
+Table ticket_types {
+  id int [pk, increment]
+  event_id int [ref: > events.id]
+  name varchar
+  description text
+  price decimal
+  quantity_available int
+  max_per_order int
+  valid_from timestamp
+  valid_until timestamp
+}
+
+Table orders {
+  id int [pk, increment]
+  user_id int [ref: > users.id, null]
+  email varchar
+  status varchar
+  payment_method varchar
+  total_price decimal
+  purchased_at timestamp
+}
+
+Table tickets {
+  id int [pk, increment]
+  order_id int [ref: > orders.id]
+  ticket_type_id int [ref: > ticket_types.id]
+  event_id int [ref: > events.id]
+  qr_code varchar [unique]
+  name_on_ticket varchar
+  is_validated boolean
+  validated_at timestamp
+  scanned_by int [ref: > users.id]
+}
+
+Table scans {
+  id int [pk, increment]
+  ticket_id int [ref: > tickets.id]
+  scanned_by int [ref: > users.id]
+  device_id int [ref: > devices.id]
+  scan_result varchar
+  scanned_at timestamp
+}
+
+Table payments {
+  id int [pk, increment]
+  order_id int [ref: > orders.id]
+  provider varchar
+  provider_id varchar
+}

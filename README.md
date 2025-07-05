@@ -134,3 +134,101 @@ load-tests/        # Artillery scripts
 You can obviously separate these into individual apps all separately hosted but for a small team without FE/BE 
 specialization, this seems to me to be the best way to do it. It does require more tooling for devops and other 
 aspects of development but is definitely easier for a single developer to handle. 
+
+
+## Anticipated Routes (Extremely Rough Draft)
+### PUBLIC ROUTES (Inertia / Web)
+
+| Method | URI                   | Purpose                           |
+|--------|------------------------|-----------------------------------|
+| GET    | `/`                   | Home / Event landing page         |
+| GET    | `/tickets`           | List ticket types                 |
+| GET    | `/cart`              | Show cart                         |
+| POST   | `/cart`              | Add ticket to cart                |
+| DELETE | `/cart/{id}`         | Remove ticket from cart           |
+| POST   | `/checkout`          | Submit order (Stripe session)     |
+| GET    | `/checkout/success`  | Stripe success callback           |
+| GET    | `/checkout/cancel`   | Stripe cancel                     |
+| GET    | `/order/{id}`        | View past order + ticket links    |
+
+---
+
+### COUNTER STAFF ROUTES (Inertia / Web UI)
+
+| Method | URI                      | Purpose                          |
+|--------|--------------------------|----------------------------------|
+| GET    | `/counter`               | Counter app interface            |
+| POST   | `/counter/order`         | Create in-person cash order      |
+| GET    | `/counter/order/{id}`    | Show printed order/ticket page   |
+
+---
+
+### AUTH ROUTES
+
+| Method | URI            | Purpose                  |
+|--------|----------------|--------------------------|
+| GET    | `/login`       | Show login form          |
+| POST   | `/login`       | Log in                   |
+| POST   | `/logout`      | Log out                  |
+| GET    | `/register`    | Optional (public buyers) |
+| POST   | `/register`    | Create account           |
+
+---
+
+### ADMIN DASHBOARD (Inertia / Web UI)
+
+| Method | URI                  | Purpose                          |
+|--------|----------------------|----------------------------------|
+| GET    | `/admin`             | Admin dashboard home             |
+| GET    | `/admin/events`      | List/manage events               |
+| GET    | `/admin/tickets`     | List issued tickets              |
+| GET    | `/admin/orders`      | List all orders                  |
+| GET    | `/admin/scans`       | Scan log view                    |
+| GET    | `/admin/staff`       | Manage users & devices           |
+| POST   | `/admin/event`       | Create new event                 |
+| PUT    | `/admin/event/{id}`  | Update event                     |
+| DELETE | `/admin/event/{id}`  | Delete event                     |
+
+---
+
+### SCANNER API ROUTES (React Native)
+
+> Prefixed with `/api`, auth via Sanctum token or similar.
+
+| Method | URI                          | Purpose                        |
+|--------|------------------------------|--------------------------------|
+| POST   | `/api/login`                 | Mobile staff login             |
+| POST   | `/api/validate-ticket`       | Submit QR to validate          |
+| GET    | `/api/event/current`         | Get current active event info  |
+| POST   | `/api/scans`                 | Log scan result                |
+| GET    | `/api/user`                  | Authenticated scanner profile  |
+| GET    | `/api/tickets/{qr}`          | (Optional) Manual QR check     |
+
+---
+
+### STRIPE WEBHOOKS
+
+| Method | URI                 | Purpose                |
+|--------|---------------------|------------------------|
+| POST   | `/webhooks/stripe` | Handle payment events  |
+
+---
+
+### SYSTEM / DEV
+
+| Method | URI              | Purpose               |
+|--------|------------------|-----------------------|
+| GET    | `/health`        | Health check endpoint |
+| GET    | `/api/version`   | API versioning        |
+
+---
+
+### Route Summary by Audience
+
+| Audience        | Route Prefix / Location         |
+|-----------------|----------------------------------|
+| Public Buyers   | `/`, `/tickets`, `/checkout`    |
+| Staff Counter   | `/counter/...`                  |
+| Admins          | `/admin/...`                    |
+| Mobile App      | `/api/...`                      |
+| Stripe          | `/webhooks/...`                 |
