@@ -163,7 +163,7 @@ aspects of development but is definitely easier for a single developer to handle
 
 ---
 
-### AUTH ROUTES
+### AUTH ROUTES (Jetstream defaults already setup)
 
 | Method | URI            | Purpose                  |
 |--------|----------------|--------------------------|
@@ -185,9 +185,6 @@ aspects of development but is definitely easier for a single developer to handle
 | GET    | `/admin/orders`      | List all orders                  |
 | GET    | `/admin/scans`       | Scan log view                    |
 | GET    | `/admin/staff`       | Manage users & devices           |
-| POST   | `/admin/event`       | Create new event                 |
-| PUT    | `/admin/event/{id}`  | Update event                     |
-| DELETE | `/admin/event/{id}`  | Delete event                     |
 
 ---
 
