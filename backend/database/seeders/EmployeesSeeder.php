@@ -11,10 +11,16 @@ use Spatie\Permission\Models\Role;
 class EmployeesSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * This is to create the Employee accounts that would be assigned access to the scanners and the counters. Need
+     * to create devices for them all but the device specific functionality is not the priority.
      */
     public function run(): void
     {
+        // Make sure devices exist
+        $scanner_devices = Device::factory()->count(200)->scanner()->create();
+        $counter_devices = Device::factory()->count(20)->counter()->create();
+
+        // Make sure roles exist
         $scannerRole = Role::firstOrCreate([
             'name' => 'ticket scanner',
             'guard_name' => 'api',
@@ -25,28 +31,23 @@ class EmployeesSeeder extends Seeder
         ]);
 
 
-        User::factory()
-            ->count(200)
-            ->withRole('ticket scanner')
-            ->create([
-                'role' => 'ticket scanner',
-            ])
-            ->each(function ($user) {
-                $device = Device::factory()->scanner()->create();
-                $user->device_id = $device->id;
-                $user->save();
-            });
-        // Create 20 counter users + devices
-        User::factory()
-            ->count(20)
-            ->withRole('ticket counter')
-            ->create([
-                'role' => 'ticket counter',
-            ])
-            ->each(function ($user) {
-                $device = Device::factory()->counter()->create();
-                $user->device_id = $device->id;
-                $user->save();
-            });
+        // Assign scanner users
+        $scanner_devices->each(function ($device) {
+            User::factory()
+                ->withRole('ticket scanner')
+                ->create([
+                    'role' => 'ticket scanner',
+                    'device_id' => $device->id,
+                ]);
+        });
+        // Assign counter users
+        $counter_devices->each(function ($device) {
+            User::factory()
+                ->withRole('ticket counter')
+                ->create([
+                    'role' => 'ticket counter',
+                    'device_id' => $device->id,
+                ]);
+        });
     }
 }

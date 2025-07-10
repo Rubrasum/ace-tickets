@@ -35,10 +35,7 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'profile_photo_path' => null,
             'current_team_id' => null,
-
-            // 🔽 Custom fields you added
             'role' => fake()->randomElement(['user', 'staff', 'admin']),
-            'device_id' => Device::factory(), // will auto-create a related Device
             'last_login_at' => now()->subDays(fake()->numberBetween(0, 10)),
         ];
     }
