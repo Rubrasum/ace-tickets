@@ -21,13 +21,12 @@ class AdminSeeder extends Seeder
             'guard_name' => 'web',
         ]);
 
-        // Create an admin user and assign role
-        $admin = User::factory()
-            ->withRole('admin') // using your factory macro
-            ->create([
-                'email' => 'dev@joebeze.com',
-                'role' => 'admin',
-                'password' => Hash::make('password'),
-            ]);
+        $admin = User::factory()->create([
+            'name' => 'Admin User',
+            'email' => 'dev@joebeze.com',
+            'password' => Hash::make('password'),
+        ]);
+
+        $admin->assignRole($adminRole);
     }
 }

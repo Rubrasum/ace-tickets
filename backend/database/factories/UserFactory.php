@@ -35,7 +35,6 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'profile_photo_path' => null,
             'current_team_id' => null,
-            'role' => fake()->randomElement(['user', 'staff', 'admin']),
             'last_login_at' => now()->subDays(fake()->numberBetween(0, 10)),
         ];
     }
@@ -69,9 +68,5 @@ class UserFactory extends Factory
                 ->when(is_callable($callback), $callback),
             'ownedTeams'
         );
-    }
-    public function withRole(string $role): static
-    {
-        return $this->state(fn () => ['role' => $role]);
     }
 }

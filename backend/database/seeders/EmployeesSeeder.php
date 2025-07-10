@@ -16,9 +16,6 @@ class EmployeesSeeder extends Seeder
      */
     public function run(): void
     {
-        // Make sure devices exist
-        $scanner_devices = Device::factory()->count(200)->scanner()->create();
-        $counter_devices = Device::factory()->count(20)->counter()->create();
 
         // Make sure roles exist
         $scannerRole = Role::firstOrCreate([
@@ -30,24 +27,20 @@ class EmployeesSeeder extends Seeder
             'guard_name' => 'web',
         ]);
 
-
-        // Assign scanner users
-        $scanner_devices->each(function ($device) {
-            User::factory()
-                ->withRole('ticket scanner')
-                ->create([
-                    'role' => 'ticket scanner',
-                    'device_id' => $device->id,
-                ]);
+        // Create and assign scanner devices and users.
+        Device::factory()->count(200)->scanner()->create()->each(function ($device) use ($scannerRole) {
+            $user = User::factory()->create([
+                'device_id' => $device->id,
+            ]);
+            $user->assignRole($scannerRole);
         });
-        // Assign counter users
-        $counter_devices->each(function ($device) {
-            User::factory()
-                ->withRole('ticket counter')
-                ->create([
-                    'role' => 'ticket counter',
-                    'device_id' => $device->id,
-                ]);
+
+        // Create and assign counter devices and users
+        Device::factory()->count(20)->counter()->create()->each(function ($device) use ($counterRole) {
+            $user = User::factory()->create([
+                'device_id' => $device->id,
+            ]);
+            $user->assignRole($counterRole);
         });
     }
 }
