@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\EventController;
@@ -35,9 +36,7 @@ Route::middleware([
     'admin' // only admin role allowed
 ])->group(function () {
     // Admin Dashboard
-    Route::get('/admin', function () {
-        return Inertia::render('Dashboard');
-    })->name('admin.dashboard');// Admin Dashboard
+    Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');//
 
     // Normally these would be resources but I'm not setting up CRUD in backend for this. We're seeding and viewing
     Route::get('/admin/events', [EventController::class, 'index']);
