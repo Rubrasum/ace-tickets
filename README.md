@@ -66,7 +66,9 @@ over time.
 - Validation of Tickets
 - Confirmation with Success/Fail indicator
 - Log Scan times, Staff User ID, & location/zone
-- Caching with offline mode for areas with bad reception
+- ~~Caching with offline mode for areas with bad reception~~ Removed for now. That's an avanced scanner feature. We 
+COULD add it but this demo is mostly for showing off the load testing features. All we need to do that is the 
+  requests themselves. 
 
 #### contains
 - Staff user auth
