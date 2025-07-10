@@ -32,18 +32,12 @@ Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
+    'admin' // only admin role allowed
 ])->group(function () {
-    // Login and registration all handled by jetstream right now.
-
-    // Anticipated Counter Staff Routes (Inertia / Web UI)
-    Route::get('/counter', [CounterController::class, 'index'] );
-    Route::get('/counter/order', [CounterController::class, 'createOrder'] );
-    Route::get('/counter/order/{id}', [CounterController::class, 'browse'] );
-
     // Admin Dashboard
     Route::get('/admin', function () {
         return Inertia::render('Dashboard');
-    })->name('dashboard');// Admin Dashboard
+    })->name('admin.dashboard');// Admin Dashboard
 
     // Normally these would be resources but I'm not setting up CRUD in backend for this. We're seeding and viewing
     Route::get('/admin/events', [EventController::class, 'index']);
@@ -51,5 +45,17 @@ Route::middleware([
     Route::get('/admin/orders', [OrderController::class, 'index']);
     Route::get('/admin/scans', [ScanController::class, 'index']);
     Route::get('/admin/staff', [UserController::class, 'indexStaff']); // view specific role.
+});
 
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+    'counter' // must be admin or counter role
+])->group(function () {
+
+    // Anticipated Counter Staff Routes (Inertia / Web UI)
+    Route::get('/counter', [CounterController::class, 'index'] )->name('counter.dashboard');
+    Route::get('/counter/order', [CounterController::class, 'createOrder'] );
+    Route::get('/counter/order/{id}', [CounterController::class, 'browse'] );
 });
