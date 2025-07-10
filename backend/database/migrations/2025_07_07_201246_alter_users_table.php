@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('user');
             $table->foreignId('device_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamp('last_login_at')->nullable();
         });
