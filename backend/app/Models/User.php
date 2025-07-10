@@ -67,11 +67,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function withRole(string $role): static
+    /**
+     * Define the one-to-one relationship with Device.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function device()
     {
-        return $this->afterCreating(function (User $user) use ($role) {
-            $user->assignRole($role);
-        });
+        return $this->hasOne(Device::class, 'id', 'device_id');
     }
 
 }
