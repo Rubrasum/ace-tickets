@@ -27,7 +27,7 @@
                             { value: 'ticket counter', label: 'Ticket Counter' },
                         ]"
                         v-model="filters.role"
-                        @change="applyFilters"
+                        @change="refreshData"
                     />
                 </div>
                 <div class="flex items-center justify-end mr-2">
@@ -42,7 +42,7 @@
                             { value: 'mobile', label: 'Mobile' },
                         ]"
                         v-model="filters.device"
-                        @change="applyFilters"
+                        @change="refreshData"
                     />
                 </div>
                 <div class="relative mr-4 w-full flex-1" :class="{ hidden : !users }">
@@ -205,24 +205,20 @@ let searchTimer = null
 function debouncedSearch() {
     clearTimeout(searchTimer)
     searchTimer = setTimeout(() => {
-        applyFilters();
+        refreshData();
     }, 200)
 }
 
 
-// Apply filters and refresh data.
-const applyFilters = () => {
-    const sortField = props.sort;
-    const direction = props.direction;
-    const role = props.filters.role;
-    const device = props.filters.device;
-
+// Refresh data with current filters and search
+const refreshData = (overrides = {}) => {
     router.get(route('admin.dashboard.staff'), {
-        sort: sortField,
-        direction: direction,
-        role: role,
-        device: device,
+        sort: props.sort,
+        direction: props.direction,
+        role: props.filters.role,
+        device: props.filters.device,
         search: search.value,
+        ...overrides
     }, {
         only: ['users', 'sort', 'direction', 'filters', 'search'],
         preserveState: true,
@@ -231,23 +227,14 @@ const applyFilters = () => {
 };
 
 function updateSort(field) {
-    const role = props.filters.role;
-    const device = props.filters.device;
     const isSameField = props.sort === field // check if clicking on a column for 2nd+ time
     const sortField = isSameField && !props.direction ? 'name' : field; // Resets to name on 3rd click
     const newDirection = isSameField ? !props.direction : true; // switch to desc (false) on same field.
 
-    router.get(route('admin.dashboard.staff'), {
+    refreshData({
         sort: sortField,
-        direction: newDirection,
-        role: role,
-        device: device,
-        search: search.value,
-    }, {
-        only: ['users', 'sort', 'direction', 'filters', 'search'],
-        preserveState: true,
-        preserveScroll: true,
-    })
+        direction: newDirection
+    });
 }
 
 </script>
