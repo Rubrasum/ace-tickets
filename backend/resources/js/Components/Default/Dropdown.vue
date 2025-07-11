@@ -40,11 +40,7 @@ const page = usePage()
 const props = defineProps({
     title: {
         type: String,
-        required: true,
-    },
-    filterKey: {
-        type: String,
-        required: true,
+        required: false,
     },
     options: {
         type: Array,
