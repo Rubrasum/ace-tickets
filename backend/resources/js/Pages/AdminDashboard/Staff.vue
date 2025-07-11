@@ -76,7 +76,7 @@
                                     >
                                         Name
                                         <span v-if="sort === 'name'">
-                                            {{ direction ? '⬇️' : '⬆️' }}
+                                            {{ direction ? '⬆️' : '⬇️' }}
                                         </span>
                                     </th>
                                     <th
@@ -85,7 +85,7 @@
                                     >
                                         Email
                                         <span v-if="sort === 'email'">
-                                            {{ direction ? '⬇️' : '⬆️' }}
+                                            {{ direction ? '⬆️' : '⬇️' }}
                                         </span>
                                     </th>
                                     <th
@@ -94,7 +94,16 @@
                                     >
                                         Role
                                         <span v-if="sort === 'role'">
-                                            {{ direction ? '⬇️' : '⬆️' }}
+                                            {{ direction ? '⬆️' : '⬇️' }}
+                                        </span>
+                                    </th>
+                                    <th
+                                        @click="updateSort('device')"
+                                        class="cursor-pointer top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                                    >
+                                        Device
+                                        <span v-if="sort === 'device'">
+                                            {{ direction ? '⬆️' : '⬇️' }}
                                         </span>
                                     </th>
                                 </tr>
@@ -104,6 +113,8 @@
                                     <td :class="[userIdx !== users.length - 1 ? 'border-b border-gray-200' : '', 'whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6 lg:pl-8']">{{ user.name }}</td>
                                     <td :class="[userIdx !== users.length - 1 ? 'border-b border-gray-200' : '', 'hidden whitespace-nowrap px-3 py-4 text-sm text-gray-500 lg:table-cell']">{{ user.email }}</td>
                                     <td :class="[userIdx !== users.length - 1 ? 'border-b border-gray-200' : '', 'whitespace-nowrap px-3 py-4 text-sm text-gray-500']">{{ user.role }}</td>
+                                    <td :class="[userIdx !== users.length - 1 ? 'border-b border-gray-200' : '',
+                                    'whitespace-nowrap px-3 py-4 text-sm text-gray-500']">{{ user.device_type }}</td>
                                 </tr>
                                 </tbody>
                             </table>
