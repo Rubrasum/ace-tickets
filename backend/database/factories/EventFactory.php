@@ -60,6 +60,19 @@ class EventFactory extends Factory
             ];
         });
     }
+
+
+    /**
+     * Create events with random locations from provided array
+     */
+    public function withRandomLocation($locations)
+    {
+        return $this->state(function (array $attributes) use ($locations) {
+            return [
+                'location' => collect($locations)->random(),
+            ];
+        });
+    }
     /**
      * Create a past event
      */
