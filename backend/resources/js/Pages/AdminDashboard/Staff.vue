@@ -16,7 +16,7 @@
                     <h2 class="text-2xl">All Staff</h2>
                 </div>
                 <div class="flex-1 flex items-center justify-end mr-2">
-                    <h5 :class="{'text-accent' : search || filters }" >Role filter: </h5>
+                    <h5>Role filter: </h5>
                 </div>
                 <div class="relative mr-2 flex-1" :class="{ hidden : !users }">
                     <!-- Categories dropdown component -->
@@ -31,7 +31,7 @@
                     />
                 </div>
                 <div class="flex items-center justify-end mr-2">
-                    <h5 :class="{'text-accent' : search || filters }" >Device filter: </h5>
+                    <h5>Device filter: </h5>
                 </div>
                 <div class="relative mr-4 flex-1" :class="{ hidden : !users }">
                     <Dropdown
