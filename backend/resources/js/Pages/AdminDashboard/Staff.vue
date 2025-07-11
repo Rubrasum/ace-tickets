@@ -18,7 +18,27 @@
                 </div>
                 <div class="relative mr-4 flex-1" :class="{ hidden : !users }">
                     <!-- Categories dropdown component -->
-                    <Dropdown />
+                    <Dropdown
+                        title="Roles"
+                        filter-key="role"
+                        :options="[
+                            { value: 'ticket scanner', label: 'Ticket Scanner' },
+                            { value: 'ticket counter', label: 'Ticket Counter' },
+                        ]"
+                        v-model="filters.role"
+                        @update:currentValue="applyFilters"
+                    />
+                    <Dropdown
+                        title="Devices"
+                        filter-key="device"
+                        :options="[
+                            { value: 'tablet', label: 'Tablet' },
+                            { value: 'desktop', label: 'Desktop' },
+                            { value: 'mobile', label: 'Mobile' },
+                        ]"
+                        v-model="filters.device"
+                        @update:currentValue="applyFilters"
+                    />
                 </div>
                 <div class="relative mr-4 w-full flex-1" :class="{ hidden : !users }">
                     <form @submit.prevent="handleSearch" ref="form">

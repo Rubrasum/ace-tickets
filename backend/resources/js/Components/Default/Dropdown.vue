@@ -1,35 +1,30 @@
 <template>
-    <div>
+    <div class="relative">
         <button
             @click="toggleDropdown"
-            class="mr-1 lg:w-64 flex text-left lg:inline-flex px-2 py-2
-            bg-primary-bg text-primary-text focus:outline-none focus:ring-2 focus:ring-accent relative
-            rounded-none rounded-l-md border-0  text-primary-gray ring-1
-                           ring-inset ring-primary-gray placeholder:text-secondary-text focus:ring-2 focus:ring-inset
-                           focus:ring-accent sm:hidden"
+            class="mr-1 lg:w-64 flex items-center justify-between px-2 py-2 bg-white text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
         >
-            {{ currentCategory ? currentCategory.name : 'All Categories' }}
-            <ChevronDownIcon class="-mr-1 h-5 w-5 absolute right-4" :class="{ 'text-accent' : currentCategory, 'text-primary-gray' : !currentCategory }" aria-hidden="true" />
+            {{ selectedLabel || `All ${props.title}` }}
+            <ChevronDownIcon class="h-5 w-5 text-gray-500 absolute right-2" aria-hidden="true" />
         </button>
 
-        <div v-if="isDropdownOpen"
-             class="absolute bg-secondary-bg border border-primary-gray shadow-light-lg z-50 inset-x-0 py-1 w-full
-                    rounded-b-xl overflow-auto max-h-52 thin-scrollbar
-">
+        <div
+            v-if="isDropdownOpen"
+            class="absolute z-50 w-full bg-white border border-gray-300 shadow-lg rounded-b-md overflow-auto max-h-52 thin-scrollbar"
+        >
             <DropdownItem
-                @click="updatePosts(null)"
-                :active="!currentCategory"
+                @click="updateFilter(null)"
+                :active="!currentValue"
             >
-                All Categories
+                All {{ props.title }}
             </DropdownItem>
-
             <DropdownItem
-                v-for="category in categories"
-                :key="category.slug"
-                :active="currentCategory && currentCategory.slug === category.slug"
-                @click="updatePosts(category.slug)"
+                v-for="option in options"
+                :key="option.value"
+                :active="currentValue === option.value"
+                @click="updateFilter(option.value)"
             >
-                {{ category.name }}
+                {{ option.label }}
             </DropdownItem>
         </div>
     </div>
@@ -44,21 +39,39 @@ import {router, usePage} from '@inertiajs/vue3'
 
 const page = usePage()
 
-const categories = computed(() => page.props.categories)
-const currentCategory = computed(() => page.props.currentCategory)
+
+const props = defineProps({
+    title: {
+        type: String,
+        required: true,
+    },
+    filterKey: {
+        type: String,
+        required: true,
+    },
+    options: {
+        type: Array,
+        default: () => [], // Default to empty array to prevent undefined
+    },
+    currentValue: {
+        type: [String, null],
+        default: null,
+    },
+});
+const emit = defineEmits(['update:currentValue']);
 const isDropdownOpen = ref(false)
-const search = computed(() => page.props.search)
+
+const selectedLabel = computed(() => {
+    const selectedOption = props.options.find(option => option.value === props.currentValue);
+    return selectedOption ? selectedOption.label : null;
+});
 
 const toggleDropdown = () => {
-    isDropdownOpen.value = !isDropdownOpen.value
-}
+    isDropdownOpen.value = !isDropdownOpen.value;
+};
 
-const updatePosts = (categorySlug) => {
-    isDropdownOpen.value = false
-
-    router.get('/', {
-        category: categorySlug,
-        search: search.value,
-    })
-}
+const updateFilter = (value) => {
+    isDropdownOpen.value = false;
+    emit('update:currentValue', value);
+};
 </script>

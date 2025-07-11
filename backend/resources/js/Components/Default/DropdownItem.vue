@@ -1,27 +1,20 @@
 <template>
-    <a :class="classes">
-        <slot></slot>
-    </a>
+    <div
+        @click="$emit('click')"
+        :class="[
+            'px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-indigo-50 hover:text-indigo-600',
+            active ? 'bg-indigo-100 text-indigo-700' : ''
+        ]"
+    >
+        <slot />
+    </div>
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
-const props = defineProps({
+defineProps({
     active: {
         type: Boolean,
-        default: false
-    }
-})
-
-const classes = computed(() => {
-    let baseClasses = "block text-left px-3 text-sm leading-6 hover:text-accent " +
-        "hover:bg-primary-bg"
-    if (props.active) {
-        baseClasses += ' bg-primary-bg text-accent'
-    } else {
-        baseClasses += ' text-primary-text'
-    }
-    return baseClasses
-})
+        default: false,
+    },
+});
 </script>
