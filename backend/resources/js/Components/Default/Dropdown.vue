@@ -1,71 +1,79 @@
-<template>
-    <div class="relative">
-        <button
-            @click="toggleDropdown"
-            class="mr-1 lg:w-64 flex items-center justify-between px-2 py-2 bg-white text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
-        >
-            {{ selectedLabel || `All ${props.title}` }}
-            <ChevronDownIcon class="h-5 w-5 text-gray-500 right-2" aria-hidden="true" />
-        </button>
-
-        <div
-            v-if="isDropdownOpen"
-            class="absolute z-50 w-full bg-white border border-gray-300 shadow-lg rounded-b-md overflow-auto max-h-52 thin-scrollbar"
-        >
-            <DropdownItem :active="!props.modelValue" @click="updateFilter(null)">
-                All {{ props.title }}
-            </DropdownItem>
-            <DropdownItem
-                v-for="option in props.options"
-                :key="option.value"
-                :active="option.value === props.modelValue"
-                @click="updateFilter(option.value)"
-            >
-                {{ option.label }}
-            </DropdownItem>
-        </div>
-    </div>
-</template>
-
 <script setup>
-import {computed, ref} from 'vue'
-// import Icon from './Icon.vue'
-import DropdownItem from './DropdownItem.vue'
-import { ChevronDownIcon } from '@heroicons/vue/20/solid'
-import {router, usePage} from '@inertiajs/vue3'
-
-const page = usePage()
-
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 const props = defineProps({
-    title: {
+    align: {
         type: String,
-        required: false,
+        default: 'right',
     },
-    options: {
+    width: {
+        type: String,
+        default: '48',
+    },
+    contentClasses: {
         type: Array,
-        default: () => [], // Default to empty array to prevent undefined
+        default: () => ['py-1', 'bg-white dark:bg-gray-700'],
     },
-    modelValue: {
-        type: String,
-        default: null
+});
+
+let open = ref(false);
+
+const closeOnEscape = (e) => {
+    if (open.value && e.key === 'Escape') {
+        open.value = false;
     }
-});
-const emit = defineEmits(['update:modelValue', 'emit'])
-const isDropdownOpen = ref(false)
-
-const selectedLabel = computed(() => {
-    const selectedOption = props.options.find(option => option.value === props.modelValue);
-    return selectedOption ? selectedOption.label : null;
-});
-
-const toggleDropdown = () => {
-    isDropdownOpen.value = !isDropdownOpen.value;
 };
 
-const updateFilter = (value) => {
-    isDropdownOpen.value = false;
-    emit('update:modelValue', value);
-    emit('change', value) // this is your "action hook"
-};
+onMounted(() => document.addEventListener('keydown', closeOnEscape));
+onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
+
+const widthClass = computed(() => {
+    return {
+        '48': 'w-48',
+    }[props.width.toString()];
+});
+
+const alignmentClasses = computed(() => {
+    if (props.align === 'left') {
+        return 'ltr:origin-top-left rtl:origin-top-right start-0';
+    }
+
+    if (props.align === 'right') {
+        return 'ltr:origin-top-right rtl:origin-top-left end-0';
+    }
+
+    return 'origin-top';
+});
 </script>
+
+<template>
+    <div class="relative">
+        <div @click="open = ! open">
+            <slot name="trigger" />
+        </div>
+
+        <!-- Full Screen Dropdown Overlay -->
+        <div v-show="open" class="fixed inset-0 z-40" @click="open = false" />
+
+        <transition
+            enter-active-class="transition ease-out duration-200"
+            enter-from-class="transform opacity-0 scale-95"
+            enter-to-class="transform opacity-100 scale-100"
+            leave-active-class="transition ease-in duration-75"
+            leave-from-class="transform opacity-100 scale-100"
+            leave-to-class="transform opacity-0 scale-95"
+        >
+            <div
+                v-show="open"
+                class="absolute z-50 mt-2 rounded-md shadow-lg"
+                :class="[widthClass, alignmentClasses]"
+                style="display: none;"
+                @click="open = false"
+            >
+                <div class="rounded-md ring-1 ring-black ring-opacity-5" :class="contentClasses">
+                    <slot name="content" />
+                </div>
+            </div>
+        </transition>
+    </div>
+</template>
