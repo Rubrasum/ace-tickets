@@ -12,6 +12,9 @@
 
         <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
             <div class="relative flex focus-within:z-10">
+                <div class="flex items-center justify-end mr-2">
+                    <h2 class="text-2xl">All Staff</h2>
+                </div>
                 <div class="flex-1 flex items-center justify-end mr-2">
                     <h5 :class="{'text-accent' : search || filters }" >Role filter: </h5>
                 </div>
@@ -61,7 +64,6 @@
                     </form>
                 </div>
             </div>
-            <h2>All Staff</h2>
 
             <div class="mt-8 flow-root">
                 <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
