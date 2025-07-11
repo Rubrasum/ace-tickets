@@ -40,7 +40,7 @@ Route::middleware([
 
     // Normally these would be resources but I'm not setting up CRUD in backend for this. We're seeding and viewing
     Route::get('/admin/staff', [AdminDashboardController::class, 'staff'])->name('admin.dashboard.staff');
-    Route::get('/admin/events', [EventController::class, 'index']);
+    Route::get('/admin/events', [AdminDashboardController::class, 'events'])->name('admin.dashboard.events');
     Route::get('/admin/tickets', [TicketController::class, 'index']);
     Route::get('/admin/orders', [OrderController::class, 'index']);
     Route::get('/admin/scans', [ScanController::class, 'index']);

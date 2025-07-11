@@ -52,10 +52,15 @@ const logout = () => {
                                     Dashboard
                                 </NavLink>
                             </div>
-                            <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('admin.dashboard.staff')" :active="route().current('admin.dashboard.staff')">
                                     Staff
+                                </NavLink>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('admin.dashboard.events')"
+                                         :active="route().current('admin.dashboard.events')">
+                                    Events
                                 </NavLink>
                             </div>
                         </div>
