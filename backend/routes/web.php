@@ -36,14 +36,14 @@ Route::middleware([
     'admin' // only admin role allowed
 ])->group(function () {
     // Admin Dashboard
-    Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');//
+    Route::get('/admin', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 
     // Normally these would be resources but I'm not setting up CRUD in backend for this. We're seeding and viewing
+    Route::get('/admin/staff', [AdminDashboardController::class, 'staff'])->name('admin.dashboard.staff');
     Route::get('/admin/events', [EventController::class, 'index']);
     Route::get('/admin/tickets', [TicketController::class, 'index']);
     Route::get('/admin/orders', [OrderController::class, 'index']);
     Route::get('/admin/scans', [ScanController::class, 'index']);
-    Route::get('/admin/staff', [UserController::class, 'indexStaff']); // view specific role.
 });
 
 Route::middleware([
