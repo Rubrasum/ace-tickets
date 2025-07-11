@@ -11,7 +11,6 @@
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
 
         <div class="p-6 lg:p-8 bg-white border-b border-gray-200">
-            <h2>All Staff</h2>
             <div class="relative flex focus-within:z-10">
                 <div class="flex-1 flex items-center justify-end mr-2">
                     <h5 :class="{'text-accent' : search || filters }" >Role filter: </h5>
@@ -28,6 +27,8 @@
                         v-model="filters.role"
                         @update:currentValue="applyFilters"
                     />
+                </div>
+                <div class="relative mr-4 flex-1" :class="{ hidden : !users }">
                     <Dropdown
                         title="Devices"
                         filter-key="device"
@@ -50,8 +51,8 @@
                             :value="filters.role"
                         />
 
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 ">
-                            <MagnifyingGlassIcon class="h-5 w-5" :class="{ 'text-accent' : search, 'text-primary-gray' : !search }" aria-hidden="true" />
+                        <div class="pointer-events-none absolute top-0 left-0 flex items-center pl-3 pt-2">
+                            <MagnifyingGlassIcon class="h-5 w-5" aria-hidden="true" />
                         </div>
                         <input
                             type="search"
@@ -66,6 +67,8 @@
                     </form>
                 </div>
             </div>
+            <h2>All Staff</h2>
+
             <div class="mt-8 flow-root">
                 <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 align-middle">
@@ -76,7 +79,7 @@
                                 <tr>
                                     <th
                                         @click="updateSort('name')"
-                                        class="cursor-pointer sticky top-0 z-10 border-b border-gray-300 bg-white/75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
+                                        class="cursor-pointer top-0 z-10 border-b border-gray-300 bg-white/75 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter sm:pl-6 lg:pl-8"
                                     >
                                         Name
                                         <span v-if="sort === 'name'">
@@ -85,7 +88,7 @@
                                     </th>
                                     <th
                                         @click="updateSort('email')"
-                                        class="cursor-pointer sticky top-0 z-10 hidden border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell"
+                                        class="cursor-pointer top-0 z-10 hidden border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter lg:table-cell"
                                     >
                                         Email
                                         <span v-if="sort === 'email'">
@@ -94,7 +97,7 @@
                                     </th>
                                     <th
                                         @click="updateSort('role')"
-                                        class="cursor-pointer sticky top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                                        class="cursor-pointer top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
                                     >
                                         Role
                                         <span v-if="sort === 'role'">

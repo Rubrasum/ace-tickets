@@ -2,7 +2,7 @@
     <div
         @click="$emit('click')"
         :class="[
-            'px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-indigo-50 hover:text-indigo-600',
+            'px-4 py-2 text-sm text-gray-700 cursor-pointer hover:bg-indigo-50 hover:text-indigo-600 z-50',
             active ? 'bg-indigo-100 text-indigo-700' : ''
         ]"
     >

@@ -5,7 +5,7 @@
             class="mr-1 lg:w-64 flex items-center justify-between px-2 py-2 bg-white text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
         >
             {{ selectedLabel || `All ${props.title}` }}
-            <ChevronDownIcon class="h-5 w-5 text-gray-500 absolute right-2" aria-hidden="true" />
+            <ChevronDownIcon class="h-5 w-5 text-gray-500 right-2" aria-hidden="true" />
         </button>
 
         <div
