@@ -16,32 +16,31 @@
                                 <h2 class="text-2xl">All Events</h2>
                             </div>
                             <div class="flex-1 flex items-center justify-end mr-2">
-                                <h5>Role filter: </h5>
+                                <h5>Location filter: </h5>
                             </div>
                             <div class="relative mr-2 flex-1" :class="{ hidden : !events }">
                                 <!-- Categories dropdown component -->
                                 <Dropdown
-                                    :title="'Roles'"
-                                    :options="[
-                            { value: 'ticket scanner', label: 'Ticket Scanner' },
-                            { value: 'ticket counter', label: 'Ticket Counter' },
-                        ]"
-                                    v-model="filters.role"
+                                    :title="'Locations'"
+                                    :options="props.locations.map(location => ({
+                                        value: location,
+                                        label: location
+                                    }))"
+                                    v-model="filters.location"
                                     @change="refreshData"
                                 />
                             </div>
                             <div class="flex items-center justify-end mr-2">
-                                <h5>Device filter: </h5>
+                                <h5>Status filter: </h5>
                             </div>
                             <div class="relative mr-4 flex-1" :class="{ hidden : !events }">
                                 <Dropdown
-                                    :title="'Devices'"
+                                    :title="'Status'"
                                     :options="[
-                            { value: 'tablet', label: 'Tablet' },
-                            { value: 'desktop', label: 'Desktop' },
-                            { value: 'mobile', label: 'Mobile' },
-                        ]"
-                                    v-model="filters.device"
+                                        { value: 'active', label: 'Active' },
+                                        { value: 'inactive', label: 'Inactive' },
+                                    ]"
+                                    v-model="filters.status"
                                     @change="refreshData"
                                 />
                             </div>
@@ -209,6 +208,10 @@ const props = defineProps({
         type: String,
         default: ''
     },
+    locations: {
+        type: Object,
+        required: false,
+    }
 });
 const search = ref(props.search) // This isn't as clean because its not a custom component. Can't directly v-model.
 
