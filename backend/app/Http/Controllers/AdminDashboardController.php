@@ -43,7 +43,7 @@ class AdminDashboardController extends Controller
                         ->orWhere('users.email', 'LIKE', '%' . $search . '%');
                 });
             })
-            ->select('users.*') // avoid conflicts
+            ->select('users.*', 'devices.last_login_at', 'devices.is_active') // include device columns
             ->with(['roles', 'device']);
 
         // Apply unified sorting
@@ -59,22 +59,31 @@ class AdminDashboardController extends Controller
             case 'device_type':
                 $query->orderBy('devices.type', $sort_direction);
                 break;
+            case 'last_login_at':
+                $query->orderBy('devices.last_login_at', $sort_direction);
+                break;
+            case 'is_active':
+                $query->orderBy('devices.is_active', $sort_direction);
+                break;
         }
 
         // Execute query
         $users = $query->get();
+        $users = $users->map(function ($user) { // remove the "good stuff"
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->roles->pluck('name')->first() ?? 'None',
+                'device_type' => $user->device ? $user->device->type : 'None',
+                'last_login_at' => $user->device ? $user->device->last_login_at : null,
+                'is_active' => $user->device ? $user->device->is_active : false,
+            ];
+        });
 
         // Pass data to Inertia
         return Inertia::render('AdminDashboard/Staff', [
-            'users' => $users->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->roles->pluck('name')->first() ?? 'None',
-                    'device_type' => $user->device ? $user->device->type : 'None',
-                ];
-            }),
+            'users' => $users,
             'filters' => [
                 'role' => $role_filter,
                 'device' => $device_filter,

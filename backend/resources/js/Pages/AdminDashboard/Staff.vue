@@ -41,8 +41,6 @@
                 </div>
                 <div class="relative mr-4 w-full flex-1" :class="{ hidden : !users }">
                     <form @submit.prevent="debouncedSearch">
-
-
                         <div class="pointer-events-none absolute top-2.5 left-0 flex items-center pl-3 ">
                             <MagnifyingGlassIcon class="h-5 w-5" aria-hidden="true" />
                         </div>
@@ -106,6 +104,24 @@
                                             {{ direction ? '⬆️' : '⬇️' }}
                                         </span>
                                     </th>
+                                    <th
+                                        @click="updateSort('last_login_at')"
+                                        class="cursor-pointer top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                                    >
+                                        Last Login At
+                                        <span v-if="sort === 'last_login_at'">
+                                            {{ direction ? '⬆️' : '⬇️' }}
+                                        </span>
+                                    </th>
+                                    <th
+                                        @click="updateSort('is_active')"
+                                        class="cursor-pointer top-0 z-10 border-b border-gray-300 bg-white/75 px-3 py-3.5 text-left text-sm font-semibold text-gray-900 backdrop-blur backdrop-filter"
+                                    >
+                                        Is Active
+                                        <span v-if="sort === 'is_active'">
+                                            {{ direction ? '⬆️' : '⬇️' }}
+                                        </span>
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -115,6 +131,23 @@
                                     <td :class="[userIdx !== users.length - 1 ? 'border-b border-gray-200' : '', 'whitespace-nowrap px-3 py-4 text-sm text-gray-500']">{{ user.role }}</td>
                                     <td :class="[userIdx !== users.length - 1 ? 'border-b border-gray-200' : '',
                                     'whitespace-nowrap px-3 py-4 text-sm text-gray-500']">{{ user.device_type }}</td>
+                                    <td :class="[userIdx !== users.length - 1 ? 'border-b border-gray-200' : '',
+                                        'whitespace-nowrap px-3 py-4 text-sm text-gray-500']">
+                                        {{ user.last_login_at ? new Date(user.last_login_at).toLocaleString(undefined, {
+                                            year: 'numeric',
+                                            month: 'short',
+                                            day: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit'
+                                        }) : 'Never' }}
+                                    </td>
+                                    <td :class="[userIdx !== users.length - 1 ? 'border-b border-gray-200' : '',
+                                        'whitespace-nowrap px-3 py-4 text-sm text-gray-500']">
+                                        <span :class="[
+                                            'inline-block w-2 h-2 rounded-full',
+                                            user.is_active ? 'bg-green-500' : 'bg-red-500'
+                                        ]"></span>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -133,7 +166,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {router, usePage} from "@inertiajs/vue3";
-import Dropdown from "@/Components/Default/Dropdown.vue";
+import Dropdown from "@/Components/Default/FilterDropdown.vue";
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import { ref } from 'vue'
 
