@@ -18,8 +18,7 @@
                 <div class="relative mr-4 flex-1" :class="{ hidden : !users }">
                     <!-- Categories dropdown component -->
                     <Dropdown
-                        title="Roles"
-                        filter-key="role"
+                        :title="'Roles'"
                         :options="[
                             { value: 'ticket scanner', label: 'Ticket Scanner' },
                             { value: 'ticket counter', label: 'Ticket Counter' },
@@ -30,8 +29,7 @@
                 </div>
                 <div class="relative mr-4 flex-1" :class="{ hidden : !users }">
                     <Dropdown
-                        title="Devices"
-                        filter-key="device"
+                        :title="'Devices'"
                         :options="[
                             { value: 'tablet', label: 'Tablet' },
                             { value: 'desktop', label: 'Desktop' },
@@ -42,16 +40,10 @@
                     />
                 </div>
                 <div class="relative mr-4 w-full flex-1" :class="{ hidden : !users }">
-                    <form @submit.prevent="handleSearch" ref="form">
-                        <!--                        This is hidden. Please remember. You might be looking for dropdown ^^ above (categories)-->
-                        <input
-                            v-if="filters.role"
-                            type="hidden"
-                            name="category"
-                            :value="filters.role"
-                        />
+                    <form @submit.prevent="debouncedSearch">
 
-                        <div class="pointer-events-none absolute top-0 left-0 flex items-center pl-3 pt-2">
+
+                        <div class="pointer-events-none absolute top-2.5 left-0 flex items-center pl-3 ">
                             <MagnifyingGlassIcon class="h-5 w-5" aria-hidden="true" />
                         </div>
                         <input
@@ -63,6 +55,7 @@
                                         focus:ring-accent border border-accent rounded-lg px-4 py-2
                                        bg-primary-bg text-primary-text"
                             v-model="search"
+                            @input="debouncedSearch"
                         />
                     </form>
                 </div>
@@ -131,6 +124,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import {router, usePage} from "@inertiajs/vue3";
 import Dropdown from "@/Components/Default/Dropdown.vue";
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
+import { ref } from 'vue'
 
 
 const page = usePage();
@@ -143,9 +137,28 @@ const props = defineProps({
         type: Object,
         default: () => ({ role: '', device: '' }),
     },
-    sort: String,
+    sort: {
+        type: String,
+        default: ''
+    },
     direction: Boolean,
+    search: {
+        type: String,
+        default: ''
+    },
 });
+const search = ref(props.search) // This isn't as clean because its not a custom component. Can't directly v-model.
+
+// Normally you might see a watcher here but that seems unnecessary to me when it can be manually setup. Maybe I am
+// just duplicating that same functionality.
+// search debounce
+let searchTimer = null
+function debouncedSearch() {
+    clearTimeout(searchTimer)
+    searchTimer = setTimeout(() => {
+        applyFilters();
+    }, 200)
+}
 
 
 // Apply filters and refresh data.
@@ -159,28 +172,30 @@ const applyFilters = () => {
         sort: sortField,
         direction: direction,
         role: role,
-        device: device
+        device: device,
+        search: search.value,
     }, {
-        only: ['users', 'sort', 'direction', 'filters'],
+        only: ['users', 'sort', 'direction', 'filters', 'search'],
         preserveState: true,
         preserveScroll: true,
     })
 };
 
 function updateSort(field) {
+    const role = props.filters.role;
+    const device = props.filters.device;
     const isSameField = props.sort === field // check if clicking on a column for 2nd+ time
     const sortField = isSameField && !props.direction ? 'name' : field; // Resets to name on 3rd click
     const newDirection = isSameField ? !props.direction : true; // switch to desc (false) on same field.
-    const role = props.filters.role;
-    const device = props.filters.device;
 
     router.get(route('admin.dashboard.staff'), {
         sort: sortField,
         direction: newDirection,
         role: role,
-        device: device
+        device: device,
+        search: search.value,
     }, {
-        only: ['users', 'sort', 'direction', 'filters'],
+        only: ['users', 'sort', 'direction', 'filters', 'search'],
         preserveState: true,
         preserveScroll: true,
     })

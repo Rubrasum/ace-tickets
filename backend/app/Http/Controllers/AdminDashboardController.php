@@ -18,6 +18,8 @@ class AdminDashboardController extends Controller
         // Get possible sort by
         $sort = $request->input('sort', 'name'); // Default sort
         $sort_direction = $request->boolean('direction') ? 'asc' : 'desc'; // Optional ?desc=true
+        // search
+        $search = $request->input('search');
 
 
         $query = User::query()
@@ -34,6 +36,12 @@ class AdminDashboardController extends Controller
             })
             ->when($device_filter, function ($q) use ($device_filter) {
                 return $q->where('devices.type', $device_filter);
+            })
+            ->when($search, function ($q) use ($search) {
+                return $q->where(function ($query) use ($search) {
+                    $query->where('users.name', 'LIKE', '%' . $search . '%')
+                        ->orWhere('users.email', 'LIKE', '%' . $search . '%');
+                });
             })
             ->select('users.*') // avoid conflicts
             ->with(['roles', 'device']);
@@ -72,7 +80,8 @@ class AdminDashboardController extends Controller
                 'device' => $device_filter,
             ],
             'sort' => $sort,
-            'direction' => ($sort_direction == 'asc')
+            'direction' => ($sort_direction == 'asc'),
+            'search' => $search
         ]);
     }
 }
