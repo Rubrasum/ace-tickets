@@ -12,16 +12,13 @@
             v-if="isDropdownOpen"
             class="absolute z-50 w-full bg-white border border-gray-300 shadow-lg rounded-b-md overflow-auto max-h-52 thin-scrollbar"
         >
-            <DropdownItem
-                @click="updateFilter(null)"
-                :active="!currentValue"
-            >
+            <DropdownItem :active="!props.modelValue" @click="updateFilter(null)">
                 All {{ props.title }}
             </DropdownItem>
             <DropdownItem
-                v-for="option in options"
+                v-for="option in props.options"
                 :key="option.value"
-                :active="currentValue === option.value"
+                :active="option.value === props.modelValue"
                 @click="updateFilter(option.value)"
             >
                 {{ option.label }}
@@ -53,16 +50,16 @@ const props = defineProps({
         type: Array,
         default: () => [], // Default to empty array to prevent undefined
     },
-    currentValue: {
-        type: [String, null],
-        default: null,
-    },
+    modelValue: {
+        type: String,
+        default: null
+    }
 });
-const emit = defineEmits(['update:currentValue']);
+const emit = defineEmits(['update:modelValue', 'emit'])
 const isDropdownOpen = ref(false)
 
 const selectedLabel = computed(() => {
-    const selectedOption = props.options.find(option => option.value === props.currentValue);
+    const selectedOption = props.options.find(option => option.value === props.modelValue);
     return selectedOption ? selectedOption.label : null;
 });
 
@@ -72,6 +69,7 @@ const toggleDropdown = () => {
 
 const updateFilter = (value) => {
     isDropdownOpen.value = false;
-    emit('update:currentValue', value);
+    emit('update:modelValue', value);
+    emit('change', value) // this is your "action hook"
 };
 </script>

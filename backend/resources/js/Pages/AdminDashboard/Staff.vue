@@ -25,7 +25,7 @@
                             { value: 'ticket counter', label: 'Ticket Counter' },
                         ]"
                         v-model="filters.role"
-                        @update:currentValue="applyFilters"
+                        @change="applyFilters"
                     />
                 </div>
                 <div class="relative mr-4 flex-1" :class="{ hidden : !users }">
@@ -38,7 +38,7 @@
                             { value: 'mobile', label: 'Mobile' },
                         ]"
                         v-model="filters.device"
-                        @update:currentValue="applyFilters"
+                        @change="applyFilters"
                     />
                 </div>
                 <div class="relative mr-4 w-full flex-1" :class="{ hidden : !users }">
@@ -73,7 +73,7 @@
                 <div class="-mx-4 -my-2 sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 align-middle">
                         <!-- Scrollable container for sticky headers -->
-                        <div class="max-h-[1000px] overflow-y-auto">
+                        <div class="overflow-y-auto">
                             <table class="min-w-full border-separate border-spacing-0">
                                 <thead>
                                 <tr>
@@ -118,7 +118,6 @@
                     </div>
                 </div>
             </div>
-            <pre class="bg-gray-100 p-4 rounded-md text-sm text-gray-800">{{ JSON.stringify(users, null, 2) }}</pre>
         </div>
 
 
@@ -151,26 +150,40 @@ const props = defineProps({
 
 // Apply filters and refresh data.
 const applyFilters = () => {
-    Inertia.get(route('admin.staff'), filters.value, {
+    const sortField = props.sort;
+    const direction = props.direction;
+    const role = props.filters.role;
+    const device = props.filters.device;
+
+    router.get(route('admin.dashboard.staff'), {
+        sort: sortField,
+        direction: direction,
+        role: role,
+        device: device
+    }, {
+        only: ['users', 'sort', 'direction', 'filters'],
         preserveState: true,
         preserveScroll: true,
-    });
+    })
 };
 
 function updateSort(field) {
     const isSameField = props.sort === field // check if clicking on a column for 2nd+ time
     const sortField = isSameField && !props.direction ? 'name' : field; // Resets to name on 3rd click
     const newDirection = isSameField ? !props.direction : true; // switch to desc (false) on same field.
+    const role = props.filters.role;
+    const device = props.filters.device;
 
     router.get(route('admin.dashboard.staff'), {
         sort: sortField,
         direction: newDirection,
+        role: role,
+        device: device
     }, {
-        only: ['users', 'sort', 'direction'],
+        only: ['users', 'sort', 'direction', 'filters'],
         preserveState: true,
         preserveScroll: true,
     })
 }
-
 
 </script>
